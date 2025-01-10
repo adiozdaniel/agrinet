@@ -4,7 +4,8 @@ import (
 	"database/sql"
 	"log"
 
-	_ "github.com/mattn/go-sqlite3"
+	// _ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
 )
 
 var db *sql.DB
@@ -12,7 +13,7 @@ var db *sql.DB
 // InitDB initializes the SQLite database connection
 func InitDB(dataSourceName string) (*sql.DB, error) {
 	var err error
-	db, err = sql.Open("sqlite3", dataSourceName)
+	db, err = sql.Open("sqlite", dataSourceName)
 	if err != nil {
 		return nil, err
 	}
