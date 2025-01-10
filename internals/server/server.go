@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 	"os/signal"
 	"strings"
 	"syscall"
@@ -19,6 +20,7 @@ import (
 // Server represents the HTTP server
 type Server struct {
 	server *http.Server
+	scriptCmd *exec.Cmd
 }
 
 // NewServer creates a new server instance
@@ -36,6 +38,14 @@ func NewServer(addr string, userRepo repositories.UserRepo, productRepo reposito
 	return &Server{
 		server: srv,
 	}
+}
+
+// startScript starts the server.mjs script
+func (s *Server) startScript() error {
+	s.scriptCmd = exec.Command("node", "../../clientServer/server.mjs")
+	s.scriptCmd.Stdout = os.Stdout
+	s.scriptCmd.Stderr = os.Stderr
+	return s.scriptCmd.Start()
 }
 
 // handleShutdown handles the shutdown of the server
@@ -56,6 +66,11 @@ func (s *Server) handleShutdown() {
 func (s *Server) Start() {
 	serverErrors := make(chan error, 1)
 	commandChan := make(chan string, 1)
+
+	// Start the server.mjs script
+	if err := s.startScript(); err != nil {
+		log.Fatalf("\nError starting client server:\n %v", err)
+	}
 
 	// Start the server
 	go func() {
