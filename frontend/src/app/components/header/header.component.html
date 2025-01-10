@@ -2,12 +2,9 @@
   class="bg-slate-100 text-green-700 text-xl font-bold px-4 py-3 shadow-md flex justify-between items-center"
 >
   <!-- Logo -->
-  <button
-    class="text-xl"
-    routerLink="/"
-  >
-    AGRINET
-  </button>
+  <button class="text-xl" routerLink="/">AGRINET</button>
+
+  <img src="agrinet.svg" alt="" routerLink="/" />
 
   <!-- Sign In Button (Only on Landing Page) -->
   <app-primary-button
@@ -30,11 +27,7 @@
   </div>
 
   <div *ngIf="isCartCheckout()">
-    <app-primary-button
-    label="Back to Products"
-    routerLink = "/product"
-    >
-
+    <app-primary-button label="Back to Products" routerLink="/product">
     </app-primary-button>
   </div>
 </div>
