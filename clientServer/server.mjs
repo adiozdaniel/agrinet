@@ -3,8 +3,13 @@ import { readFile } from "fs/promises";
 import { extname, join } from "path";
 import { fileURLToPath } from "url";
 
+// Get the current directory name
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
-const PORT = 8080;
+
+// Get the port from the environment variable, default to 8181 if not available
+const PORT = process.env.PORT || 8181;
+
+// Directory to serve
 const DIST_FOLDER = join(__dirname, ".");
 
 const mimeTypes = {
