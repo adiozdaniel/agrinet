@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"os/exec"
 	"os/signal"
 	"strings"
 	"syscall"
@@ -20,7 +19,6 @@ import (
 // Server represents the HTTP server
 type Server struct {
 	server *http.Server
-	scriptCmd *exec.Cmd
 }
 
 // NewServer creates a new server instance
@@ -40,30 +38,10 @@ func NewServer(addr string, userRepo repositories.UserRepo, productRepo reposito
 	}
 }
 
-// startScript starts the clientServer script
-func (s *Server) startScript() error {
-	s.scriptCmd = exec.Command("node", "clientServer/server.mjs")
-	s.scriptCmd.Stdout = os.Stdout
-	s.scriptCmd.Stderr = os.Stderr
-	return s.scriptCmd.Start()
-}
-
-// stopScript stops the clientServer script
-func (s *Server) stopScript() {
-	if s.scriptCmd != nil && s.scriptCmd.Process != nil {
-		if err := s.scriptCmd.Process.Signal(syscall.SIGTERM); err != nil {
-			log.Printf("Error stopping the client server\n: %v", err)
-		}
-	}
-}
-
 // handleShutdown handles the shutdown of the server
 func (s *Server) handleShutdown() {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
-
-	// Stop the clientServer script
-	s.stopScript()
 
 	if err := s.server.Shutdown(ctx); err != nil {
 		log.Printf("Graceful shutdown did not complete in %v : %v", 15*time.Second, err)
@@ -78,11 +56,6 @@ func (s *Server) handleShutdown() {
 func (s *Server) Start() {
 	serverErrors := make(chan error, 1)
 	commandChan := make(chan string, 1)
-
-	// Start the server.mjs script
-	if err := s.startScript(); err != nil {
-		log.Fatalf("\nError starting client server:\n %v", err)
-	}
 
 	// Start the server
 	go func() {
