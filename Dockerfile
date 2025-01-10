@@ -1,44 +1,32 @@
-# Use an official Go image as the base image
+# Use a Go base image to build the application
 FROM golang:1.23 AS builder
 
-# Set the working directory for the backend app
+# Set the current working directory inside the container
 WORKDIR /app
 
-# Copy Go module files and install dependencies
-COPY go.mod go.sum /app/
+# Copy the local Go module files to the container
+COPY go.mod go.sum ./
 
-# Install the required Go dependencies
-RUN go get modernc.org/sqlite \
-    github.com/google/uuid \
-    github.com/golang-jwt/jwt \
-    golang.org/x/crypto/bcrypt \
-    github.com/gorilla/mux \
-    github.com/rs/cors
+# Download dependencies
+RUN go mod download
 
-# Run go mod tidy to ensure dependencies are clean and updated
-RUN go mod tidy
+# Copy the entire project to the container
+COPY . .
 
-# Copy only the necessary Go source code
-COPY internals /app/internals
-COPY pkg/ /app/pkg/
-COPY main.go /app/
+# Build the Go application
+RUN go build -o myapp ./cmd/main.go
 
-# Copy the entire Node.js server directory
-COPY clientServer/ /app/clientServer/
-COPY images/ /app/images/
-
-# Build the Go backend app
-RUN go build -o clientServer ./main.go
-
-# Use a minimal base image for the final image
+# Start a new stage to create a lean final image
 FROM debian:bullseye-slim
 
-# Set the working directory for production
+# Set the working directory
 WORKDIR /app
 
-# Expose ports for both services
-EXPOSE 8080
-EXPOSE 3000
+# Copy the built Go application from the builder image
+COPY --from=builder /app/myapp .
 
-# Command to run when the container starts
-CMD ["./clientServer"]
+# Expose the port that the application will listen on
+EXPOSE 8080
+
+# Run the application
+CMD ["./myapp"]
