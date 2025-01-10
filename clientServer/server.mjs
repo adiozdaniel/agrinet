@@ -7,7 +7,7 @@ import { fileURLToPath } from "url";
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 // Get the port from the environment variable, default to 8181 if not available
-const PORT = process.env.PORT || 8181;
+const PORT = process.env.PORT || 3000;
 
 // Directory to serve
 const DIST_FOLDER = join(__dirname, ".");
