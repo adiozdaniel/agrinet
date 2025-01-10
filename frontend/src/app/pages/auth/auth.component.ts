@@ -82,6 +82,8 @@ export class AuthComponent {
         this.isLoading = false;
         this.errorMessage = error.message || 'Login failed. Please try again.';
         console.error('Login Error:', error);
+        // TODO to be removed on release
+        this.router.navigate(['/product']);
       }
     );
   }
