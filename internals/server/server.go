@@ -42,7 +42,7 @@ func NewServer(addr string, userRepo repositories.UserRepo, productRepo reposito
 
 // startScript starts the server.mjs script
 func (s *Server) startScript() error {
-	s.scriptCmd = exec.Command("node", "../../clientServer/server.mjs")
+	s.scriptCmd = exec.Command("node", "clientServer/server.mjs")
 	s.scriptCmd.Stdout = os.Stdout
 	s.scriptCmd.Stderr = os.Stderr
 	return s.scriptCmd.Start()
