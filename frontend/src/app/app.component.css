@@ -1,0 +1,9 @@
+.background {
+  height: 100vh; /* Full viewport height */
+  width: 100%; /* Full width */
+  background-size: cover; /* Ensure the image covers the area */
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Prevent tiling */
+  position: absolute; /* Ensure it stays at the back */
+  z-index: -1; /* Push it behind other content */
+}
