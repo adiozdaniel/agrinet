@@ -14,7 +14,7 @@ RUN go mod download
 COPY . .
 
 # Build the Go application
-RUN go build -o myapp ./cmd/main.go
+RUN go build -o myapp ./main.go
 
 # Start a new stage to create a lean final image
 FROM debian:bullseye-slim
